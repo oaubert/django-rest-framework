@@ -12,7 +12,7 @@ Currently our API doesn't have any restrictions on who can edit or delete code s
 We're going to make a couple of changes to our `Snippet` model class.
 First, let's add a couple of fields.  One of those fields will be used to represent the user who created the code snippet.  The other field will be used to store the highlighted HTML representation of the code.
 
-Add the following two fields to the model.
+Add the following two fields to the model:
 
     owner = models.ForeignKey('auth.User', related_name='snippets')
     highlighted = models.TextField()
@@ -54,6 +54,8 @@ You might also want to create a few different users, to use for testing the API.
 
 Now that we've got some users to work with, we'd better add representations of those users to our API.  Creating a new serializer is easy:
 
+    from django.contrib.auth.models import User
+
     class UserSerializer(serializers.ModelSerializer):
         snippets = serializers.ManyPrimaryKeyRelatedField()
 
@@ -64,6 +66,8 @@ Now that we've got some users to work with, we'd better add representations of t
 Because `'snippets'` is a *reverse* relationship on the User model, it will not be included by default when using the `ModelSerializer` class, so we've needed to add an explicit field for it.
 
 We'll also add a couple of views.  We'd like to just use read-only views for the user representations, so we'll use the `ListAPIView` and `RetrieveAPIView` generic class based views.
+
+    from django.contrib.auth.models import User
 
     class UserList(generics.ListAPIView):
         model = User
